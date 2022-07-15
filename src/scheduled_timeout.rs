@@ -7,7 +7,7 @@ use crate::addr_of_boxed_future;
 /// A unique identifier for a scheduled timeout. This implements ordering and equality traits
 /// according to the `run_at` field, and if 2 identifiers have the same `run_at` they are compared
 /// by the `boxed_future_addr` field.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub struct ScheduledTimeoutIdentifier {
     /// When should this scheduled timeout run.
     run_at: Instant,

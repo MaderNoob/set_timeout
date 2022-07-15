@@ -188,7 +188,7 @@ impl SchedulerTaskHandler {
     ) -> CancellationToken {
         let timeout_identifier = ScheduledTimeoutIdentifier::new(run_at, &boxed_future);
 
-        let cancellation_token = CancellationToken { timeout_identifier };
+        let cancellation_token = CancellationToken { timeout_identifier: timeout_identifier.clone() };
 
         // this should never fail because the schedule task should never end.
         self.send_request(SchedulerTaskRequest::ScheduleTimeout {
@@ -220,7 +220,12 @@ enum SchedulerTaskRequest {
     CancelTimeout(CancellationToken),
 }
 
-#[derive(Debug)]
+/// A cancellation token which allows cancelling a timeout.
+///
+/// This token is returned from a call to [`TimeoutScheduler::set_timeout`].
+///
+/// [`TimeoutScheduler::set_timeout`]: crate::TimeoutScheduler::set_timeout
+#[derive(Debug, Clone)]
 pub struct CancellationToken {
     timeout_identifier: ScheduledTimeoutIdentifier,
 }
