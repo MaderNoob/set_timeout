@@ -1,7 +1,4 @@
-use std::{
-    future::Future,
-    time::{Duration, Instant},
-};
+use std::time::{Duration, Instant};
 
 use futures::future::BoxFuture;
 

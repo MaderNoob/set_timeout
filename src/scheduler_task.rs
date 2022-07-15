@@ -120,13 +120,11 @@ impl SchedulerTask {
                 self.update_cur_delay().await
             }
             SchedulerTaskRequest::CancelTimeout(cancellation_token) => {
-                println!("removing");
                 if self
                     .scheduled_timeouts
                     .remove(&cancellation_token.timeout_identifier)
                     .is_some()
                 {
-                    println!("removed");
                     // update the delay according to the removed timeout
                     self.update_cur_delay().await
                 }

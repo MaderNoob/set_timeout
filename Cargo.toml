@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 futures = "*"
-tokio = { version = "*", no-default-features = true, features = ["sync", "time", "rt"] }
+tokio = { version = "*", default-features = false, features = ["sync", "time", "rt"] }
 
 [dev-dependencies]
 tokio = { version = "*", features = ["full"] }

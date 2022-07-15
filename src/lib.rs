@@ -27,7 +27,8 @@ impl TimeoutScheduler {
     ///
     /// Note that a duration value greater than 0 for `min_timeout_delay`  means that the scheduled
     /// timeouts **may** execute earlier than their delay. They will be early by **at most** the duration
-    /// of `min_timeout_delay`.
+    /// of `min_timeout_delay`. This may slightly increase the performance because it avoids
+    /// unnecessary short sleeps.
     ///
     /// A value of `None` for `min_timeout_delay` means that there is no minimum timeout delay,
     /// which means that the scheduler will wait for every timeout however small it is. This
