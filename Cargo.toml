@@ -7,6 +7,7 @@ description = "A crate which allows efficiently executing futures after some del
 repository = "https://github.com/MaderNoob/set_timeout"
 keywords = ["timeout", "setTimeout", "tokio", "async", "delay"]
 categories = ["asynchronous", "concurrency", "algorithms", "data-structures"]
+license = "GPL-3.0-only"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
