@@ -188,7 +188,9 @@ impl SchedulerTaskHandler {
     ) -> CancellationToken {
         let timeout_identifier = ScheduledTimeoutIdentifier::new(run_at, &boxed_future);
 
-        let cancellation_token = CancellationToken { timeout_identifier: timeout_identifier.clone() };
+        let cancellation_token = CancellationToken {
+            timeout_identifier: timeout_identifier.clone(),
+        };
 
         // this should never fail because the schedule task should never end.
         self.send_request(SchedulerTaskRequest::ScheduleTimeout {

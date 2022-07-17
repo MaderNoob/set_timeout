@@ -37,7 +37,7 @@ async fn main() {
             if elapsed < delay{
                 println!(
                     "timeout executed before delay has exceeded, expected delay: {:?}, actual delay: {:?}",
-                    delay, 
+                    delay,
                     elapsed
                 );
 

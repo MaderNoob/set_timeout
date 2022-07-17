@@ -1,7 +1,12 @@
 [package]
 name = "set_timeout"
+authors = ["Roee Shoshani"]
 version = "0.1.0"
 edition = "2021"
+description = "A crate which allows efficiently executing futures after some delay has passed"
+repository = "https://github.com/MaderNoob/set_timeout"
+keywords = ["timeout", "setTimeout", "tokio", "async", "delay"]
+categories = ["asynchronous", "concurrency", "algorithms", "data-structures"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -12,3 +17,4 @@ tokio = { version = "*", default-features = false, features = ["sync", "time", "
 [dev-dependencies]
 tokio = { version = "*", features = ["full"] }
 rand = "*"
+lazy_static = "*"

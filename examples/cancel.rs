@@ -14,7 +14,7 @@ async fn main() {
 
     // schedule another future which will run in 1 second from now, but this one won't be
     // cancelled, so it should run.
-    scheduler.set_timeout(Duration::from_secs(1), async move{
+    scheduler.set_timeout(Duration::from_secs(1), async move {
         println!("the task that wasn't cancelled was executed");
     });
 

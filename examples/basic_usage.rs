@@ -9,7 +9,7 @@ async fn main() {
     let start = Instant::now();
 
     // schedule a future which will run after at least 1.234 seconds from now.
-    scheduler.set_timeout(Duration::from_secs_f32(1.234), async move{
+    scheduler.set_timeout(Duration::from_secs_f32(1.234), async move {
         let elapsed = start.elapsed();
 
         assert!(elapsed.as_secs_f32() > 1.234);
