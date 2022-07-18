@@ -6,7 +6,7 @@
 //! just a single `tokio` task, in contrast to many crates which spawn a new task for each set
 //! timeout call. This uses less memory and should be more performant.
 //!
-//! Please note that this crate can only by used in the context of a tokio runtime.
+//! Please note that this crate can only be used in the context of a tokio runtime.
 //!
 //! # Example
 //!
