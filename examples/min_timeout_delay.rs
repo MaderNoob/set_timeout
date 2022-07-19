@@ -5,7 +5,7 @@ use set_timeout::TimeoutScheduler;
 
 #[tokio::main]
 async fn main() {
-    const MIN_TIMEOUT_DELAY: Duration = Duration::from_millis(30);
+    const MIN_TIMEOUT_DELAY: Duration = Duration::from_millis(40);
 
     // create a scheduler with a non-empty `min_timeout_delay`.
     let scheduler = TimeoutScheduler::new(Some(MIN_TIMEOUT_DELAY));
@@ -14,12 +14,18 @@ async fn main() {
 
     // execute a future with a delay smaller than the minimum delay which we gave to the scheduler,
     // and make sure it executes immediately.
-    scheduler.set_timeout(Duration::from_millis(20), async move {
+    scheduler.set_timeout(Duration::from_millis(30), async move {
         let elapsed = start.elapsed();
 
         // since the future had a delay smaller than the minimum delay, we expect it to run almost
-        // immediately, or at least shorter than the requested delay
-        assert!(elapsed < Duration::from_millis(20));
+        // immediately, or at least shorter than the requested delay.
+        //
+        // this is not always true, since if we scheduled some future which takes a long time to
+        // execute, it might block the scheduler and then the task might be executed at a delay.
+        //
+        // but in this example we didn't schedule any future which takes a long time to execute, so
+        // this will always be true.
+        assert!(elapsed < Duration::from_millis(30));
 
         println!("elapsed: {:?}", elapsed);
     });

@@ -12,9 +12,10 @@ async fn main() {
     let scheduler = Arc::new(TimeoutScheduler::new(None));
 
     for _ in 0..10 {
+        // spawn new tasks to show how the scheduler can be shared between multiple tasks.
         let scheduler = Arc::clone(&scheduler);
-        let start = Instant::now();
         tokio::spawn(async move {
+            let start = Instant::now();
             let delay = Duration::from_millis(rand::thread_rng().gen_range(100..=1000));
             scheduler.set_timeout(delay, async move {
                 println!(

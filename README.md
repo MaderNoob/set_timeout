@@ -34,7 +34,15 @@ async fn main() {
 }
 ```
 
+## Usage Tip
+You can schedule many timeouts on the scheduler, but you should avoid scheduling futures
+which take a long time to execute, since such futures can block the scheduler from executing
+other scheduled timeouts, and may cause other timeouts to execute at a big delay.
+
+If you really need to schedule some future which takes a long time, consider scheduling a 
+future which spawns a new task and then does all the heavy stuff.
+
 ## Sharing The Scheduler
-The timeout scheduler can be shared between multiple tasks, by storing it in an `Arc`, or by
+The timeout scheduler can be shared between multiple tasks, by storing it in an [`Arc`], or by
 storing it in a global variable using the `lazy_static` crate. For an example of this, check
-out the example called `global_variable` in the examples directory.
+out the example called `global_variable` and the example called `multitasking` in the examples directory.

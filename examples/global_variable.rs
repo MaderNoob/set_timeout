@@ -11,8 +11,10 @@ lazy_static::lazy_static! {
 #[tokio::main]
 async fn main() {
     for _ in 0..10 {
-        let start = Instant::now();
+        // spawn new tasks to show that the scheduler can be used anywhere, not only on the main
+        // task.
         tokio::spawn(async move {
+            let start = Instant::now();
             let delay = Duration::from_millis(rand::thread_rng().gen_range(100..=1000));
             TIMEOUT_SCHEDULER.set_timeout(delay, async move {
                 println!(
