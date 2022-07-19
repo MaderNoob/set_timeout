@@ -1,7 +1,7 @@
 [package]
 name = "set_timeout"
 authors = ["Roee Shoshani"]
-version = "0.1.2"
+version = "0.1.3"
 edition = "2021"
 description = "A crate which allows efficiently executing futures after some delay has passed"
 repository = "https://github.com/MaderNoob/set_timeout"

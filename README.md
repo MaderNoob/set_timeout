@@ -43,6 +43,6 @@ If you really need to schedule some future which takes a long time, consider sch
 future which spawns a new task and then does all the heavy stuff.
 
 ## Sharing The Scheduler
-The timeout scheduler can be shared between multiple tasks, by storing it in an [`Arc`], or by
+The timeout scheduler can be shared between multiple tasks, by storing it in an `Arc`, or by
 storing it in a global variable using the `lazy_static` crate. For an example of this, check
 out the example called `global_variable` and the example called `multitasking` in the examples directory.

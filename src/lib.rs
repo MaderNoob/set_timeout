@@ -66,7 +66,8 @@ mod scheduler_task;
 ///
 /// This scheduler will use a single `tokio` task no matter how many timeouts are scheduled.
 ///
-/// The scheduler may be wrapped in an [`Arc`] in order to share it across multiple tasks.
+/// The scheduler may be wrapped in an [`Arc`] or stored in a global variable using `lazy_static` 
+/// in order to share it across multiple tasks.
 ///
 /// [`Arc`]: std::sync::Arc
 #[derive(Debug)]
@@ -77,21 +78,21 @@ pub struct TimeoutScheduler {
 impl TimeoutScheduler {
     /// Creates a new timeout scheduler.
     ///
-    /// The `min_timeout_delay` parameter is the minimum delay to wait for a timeout. Any timeout
-    /// which requires sleeping for a delay smaller than this will be executed immediately.
+    /// The `min_sleep_duration` parameter is the minimum sleep duration that the scheduler will
+    /// sleep for. Any timeout which requires sleeping for a delay smaller than this will be executed immediately.
     ///
-    /// Note that a duration value greater than 0 for `min_timeout_delay`  means that the scheduled
+    /// Note that a duration value greater than 0 for `min_sleep_duration` means that the scheduled
     /// timeouts **may** execute earlier than their delay. They will be early by **at most** the duration
-    /// of `min_timeout_delay`. This may slightly increase the performance because it avoids
+    /// of `min_sleep_duration`. This may slightly increase the performance because it avoids
     /// unnecessary short sleeps.
     ///
-    /// A value of `None` for `min_timeout_delay` means that there is no minimum timeout delay,
+    /// A value of `None` for `min_sleep_duration` means that there is no minimum sleep duration,
     /// which means that the scheduler will wait for every timeout however small it is. This
     /// guarantees that the timeouts will never run before their delay has exceeded.
-    pub fn new(min_timeout_delay: Option<Duration>) -> Self {
+    pub fn new(min_sleep_duration: Option<Duration>) -> Self {
         Self {
             scheduler_task_handler: SchedulerTask::run(
-                min_timeout_delay.unwrap_or_else(|| Duration::from_secs(0)),
+                min_sleep_duration.unwrap_or_else(|| Duration::from_secs(0)),
             ),
         }
     }
@@ -99,7 +100,7 @@ impl TimeoutScheduler {
     /// Executes the given future after the given delay has exceeded.
     ///
     /// The delay at which the future is actually executed might be bigger than the given `delay`,
-    /// and if `min_timeout_delay` was set, the delay might be even smaller than the given `delay`.
+    /// and if `min_sleep_duration` was set, the delay might even be smaller than the given `delay`.
     ///
     /// This function returns a [`CancellationToken`], which allows cancelling this timeout using a
     /// call to [`TimeoutScheduler::cancel_timeout`]

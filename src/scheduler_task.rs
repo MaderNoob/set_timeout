@@ -31,16 +31,18 @@ pub struct SchedulerTask {
     /// the timeout which will be first to finish.
     cur_delay: Option<Duration>,
 
-    /// The minimum delay of a timeout. Any timeout with a delay smaller than this will be executed
-    /// immediately.
-    min_timeout_delay: Duration,
+    /// The minimum sleep duration that the scheduler task will sleep for. Any sleep smaller than
+    /// this will not be executed, and any timeout which requires sleeping for a duration smaller
+    /// than this will be executed immediately.
+    min_sleep_duration: Duration,
 }
 
 impl SchedulerTask {
     /// Creates a new scheduler task and runs it, returning a [`SchedulerTaskHandler`] for it.
-    /// The `min_timeout_delay` parameter is the minimum delay to wait for a timeout. Any timeout
-    /// with a delay smaller than this will be executed immediately.
-    pub fn run(min_timeout_delay: Duration) -> SchedulerTaskHandler {
+    ///
+    /// The `min_sleep_duration` parameter is the minimum sleep duration that the scheduler will
+    /// sleep for. Any timeout which requires sleeping for a delay smaller than this will be executed immediately.
+    pub fn run(min_sleep_duration: Duration) -> SchedulerTaskHandler {
         // create a communication channel with the scheduler task
         let (sender, receiver) = mpsc::unbounded_channel();
 
@@ -48,7 +50,7 @@ impl SchedulerTask {
             scheduled_timeouts: BTreeMap::new(),
             requests_channel_receiver: receiver,
             cur_delay: None,
-            min_timeout_delay,
+            min_sleep_duration,
         };
 
         // spawn a task for the scheduler task
@@ -61,6 +63,8 @@ impl SchedulerTask {
         }
     }
 
+    /// The main loop of the scheduler task, which runs infinitely.
+    /// The main loop receives requests, sleeps if needed, and executes scheduled timeouts.
     async fn main_loop(&mut self) {
         loop {
             match self.cur_delay {
@@ -141,7 +145,7 @@ impl SchedulerTask {
             // get the delay of the smallest timeout.
             let delay = match self.scheduled_timeouts.first_key_value() {
                 Some((timeout_identifier, _boxed_future)) => {
-                    timeout_identifier.get_delay(self.min_timeout_delay)
+                    timeout_identifier.get_delay(self.min_sleep_duration)
                 }
                 None => {
                     // if there are no timeouts to wait for, just set the delay to `None`.
@@ -173,6 +177,7 @@ impl SchedulerTask {
     }
 }
 
+/// A scheduler task handler which is responsible for communicating with the scheduler task.
 #[derive(Debug)]
 pub struct SchedulerTaskHandler {
     /// A channel through which schedule requests can be sent to the scheduler task
@@ -192,7 +197,6 @@ impl SchedulerTaskHandler {
             timeout_identifier: timeout_identifier.clone(),
         };
 
-        // this should never fail because the schedule task should never end.
         self.send_request(SchedulerTaskRequest::ScheduleTimeout {
             identifier: timeout_identifier,
             boxed_future,
@@ -214,6 +218,7 @@ impl SchedulerTaskHandler {
     }
 }
 
+/// A request sent from the scheduler task handler to the scheduler task.
 enum SchedulerTaskRequest {
     ScheduleTimeout {
         identifier: ScheduledTimeoutIdentifier,
